@@ -37,3 +37,35 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+### additional items to exclude
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+*.aux
+*.bbl
+*.blg
+*.log
+*.swp
+*.synctex.gz
+*.nav
+*.out
+*.pdf
+*.csv
+*.snm
+*.toc
+*.png
+*.jpg
+*.pdf
+*DELETEME*
+ARCHIVE
+*BACKUP*
+*output*
+stderr.*
+stdout.*
+*000-data*
+S1*.zip
+S1*.SAFE
+
