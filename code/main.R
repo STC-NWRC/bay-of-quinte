@@ -80,34 +80,40 @@ n.cores   <- ifelse(test = is.macOS, yes = 4, no =  2);
 print( n.cores );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-list.data.labelled <- getData.labelled(
-    study.area     = study.area,
-    data.directory = data.directory,
-    RData.output   = "data-labelled.RData"
-    );
+cat("\n# parallel::detectCores(): ",parallel::detectCores(),"\n");
 
-DF.labelled      <- list.data.labelled[['data'         ]];
-DF.colour.scheme <- list.data.labelled[['colour_scheme']];
-
-print( str(DF.labelled     ) );
-print( str(DF.colour.scheme) );
-
-print( levels(DF.labelled[,'land_cover']) );
+cat("\n# gc()\n");
+print(   gc()   );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-DF.training.coordinates <- as.data.frame(unique(DF.labelled[,c('latitude.training','longitude.training','land_cover')]));
-print( str(DF.training.coordinates) );
+# list.data.labelled <- getData.labelled(
+#     study.area     = study.area,
+#     data.directory = data.directory,
+#     RData.output   = "data-labelled.RData"
+#     );
+#
+# DF.labelled      <- list.data.labelled[['data'         ]];
+# DF.colour.scheme <- list.data.labelled[['colour_scheme']];
+#
+# print( str(DF.labelled     ) );
+# print( str(DF.colour.scheme) );
+#
+# print( levels(DF.labelled[,'land_cover']) );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-ncdf4.snap <- get.ncdf4.snap(
-    study.area       = study.area,
-    output.directory = output.directory
-    );
+# DF.training.coordinates <- as.data.frame(unique(DF.labelled[,c('latitude.training','longitude.training','land_cover')]));
+# print( str(DF.training.coordinates) );
 
-DF.preprocessed <- nc_convert.spatiotemporal(
-    ncdf4.file.input = ncdf4.snap
-    );
-gc();
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
+# ncdf4.snap <- get.ncdf4.snap(
+#     study.area       = study.area,
+#     output.directory = output.directory
+#     );
+#
+# DF.preprocessed <- nc_convert.spatiotemporal(
+#     ncdf4.file.input = ncdf4.snap
+#     );
+# gc();
 
                         # verify.nc_convert.spatiotemporal(
                         #     ncdf4.spatiotemporal = ncdf4.spatiotemporal,
@@ -121,104 +127,104 @@ gc();
                         #     DF.training.coordinates = DF.training.coordinates
                         #     );
 
-DF.nearest.lat.lon <- get.nearest.lat.lon(
-    DF.training.coordinates = DF.training.coordinates,
-    DF.preprocessed         = DF.preprocessed,
-    DF.colour.scheme        = DF.colour.scheme
-    );
-gc();
-print( str(    DF.nearest.lat.lon) );
-print( summary(DF.nearest.lat.lon) );
-
-plot.labelled.data.geography(
-    DF.nearest.lat.lon   = DF.nearest.lat.lon,
-    DF.preprocessed      = DF.preprocessed,
-    plot.date            = NULL, # use default method to choose date
-    DF.colour.scheme     = DF.colour.scheme
-    );
-
-### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-DF.training <- nc_getTidyData.byCoordinates(
-    DF.preprocessed = DF.preprocessed,
-    DF.coordinates  = DF.nearest.lat.lon[,c('lat','lon')],
-    parquet.output  = "data-training.parquet"
-    );
-gc();
-print( str(DF.training) );
+# DF.nearest.lat.lon <- get.nearest.lat.lon(
+#     DF.training.coordinates = DF.training.coordinates,
+#     DF.preprocessed         = DF.preprocessed,
+#     DF.colour.scheme        = DF.colour.scheme
+#     );
+# gc();
+# print( str(    DF.nearest.lat.lon) );
+# print( summary(DF.nearest.lat.lon) );
+#
+# plot.labelled.data.geography(
+#     DF.nearest.lat.lon   = DF.nearest.lat.lon,
+#     DF.preprocessed      = DF.preprocessed,
+#     plot.date            = NULL, # use default method to choose date
+#     DF.colour.scheme     = DF.colour.scheme
+#     );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-visualize.training.data(
-    DF.nearest.lat.lon = DF.nearest.lat.lon,
-    DF.training        = DF.training,
-    colname.pattern    = "Sigma0_(VV|VH)_db",
-    DF.colour.scheme   = DF.colour.scheme,
-    output.directory   = "plot-training-data"
-    );
-gc();
+# DF.training <- nc_getTidyData.byCoordinates(
+#     DF.preprocessed = DF.preprocessed,
+#     DF.coordinates  = DF.nearest.lat.lon[,c('lat','lon')],
+#     parquet.output  = "data-training.parquet"
+#     );
+# gc();
+# print( str(DF.training) );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-trained.fpc.FeatureEngine <- train.fpc.FeatureEngine(
-    DF.training      = DF.training,
-    DF.land.cover    = DF.nearest.lat.lon[,c('lat_lon','land_cover')],
-    x                = 'lon',
-    y                = 'lat',
-    date             = 'date',
-    variable         = target.variable,
-    min.date         = as.Date("2019-01-15"),
-    max.date         = as.Date("2019-12-16"),
-    n.harmonics      = 7,
-    DF.colour.scheme = DF.colour.scheme,
-    RData.output     = RData.trained.engine
-    );
-gc();
-print( str(trained.fpc.FeatureEngine) );
+# visualize.training.data(
+#     DF.nearest.lat.lon = DF.nearest.lat.lon,
+#     DF.training        = DF.training,
+#     colname.pattern    = "Sigma0_(VV|VH)_db",
+#     DF.colour.scheme   = DF.colour.scheme,
+#     output.directory   = "plot-training-data"
+#     );
+# gc();
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-approximations.directory <- file.path(getwd(),"tmp-fpc-approximations");
-
-DF.training[,"lat_lon"] <- apply(
-    X      = DF.training[,c("lat","lon")],
-    MARGIN = 1,
-    FUN    = function(x) { return(paste(x = x, collapse = "_")) }
-    );
-
-print( str(DF.training) );
-
-print( str(unique(DF.training)) );
-
-print( str(DF.nearest.lat.lon) );
-
-print( str(unique(DF.nearest.lat.lon)) );
-
-print( setdiff(DF.training$lat_lon,DF.nearest.lat.lon$lat_lon) );
-
-print( setdiff(DF.nearest.lat.lon$lat_lon,DF.training$lat_lon) );
-
-DF.training <- merge(
-    x     = DF.training,
-    y     = DF.nearest.lat.lon[,c('lat_lon','land_cover')],
-    by    = 'lat_lon',
-    all.x = TRUE
-    );
-DF.training <- unique(DF.training);
-
-visualize.fpc.approximations(
-    featureEngine    = trained.fpc.FeatureEngine,
-    DF.variable      = DF.training,
-    location         = 'lat_lon',
-    date             = 'date',
-    land.cover       = 'land_cover',
-    variable         = target.variable,
-    n.locations      = 10,
-    DF.colour.scheme = DF.colour.scheme,
-    my.seed          = my.seed,
-    output.directory = approximations.directory
-    );
+# trained.fpc.FeatureEngine <- train.fpc.FeatureEngine(
+#     DF.training      = DF.training,
+#     DF.land.cover    = DF.nearest.lat.lon[,c('lat_lon','land_cover')],
+#     x                = 'lon',
+#     y                = 'lat',
+#     date             = 'date',
+#     variable         = target.variable,
+#     min.date         = as.Date("2019-01-15"),
+#     max.date         = as.Date("2019-12-16"),
+#     n.harmonics      = 7,
+#     DF.colour.scheme = DF.colour.scheme,
+#     RData.output     = RData.trained.engine
+#     );
+# gc();
+# print( str(trained.fpc.FeatureEngine) );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-CSV.partitions       <- "DF-partitions-scores.csv";
-directory.fpc.scores <- "tmp-fpc-scores";
-parquet.file.stem    <- "DF-tidy-scores";
+# approximations.directory <- file.path(getwd(),"tmp-fpc-approximations");
+#
+# DF.training[,"lat_lon"] <- apply(
+#     X      = DF.training[,c("lat","lon")],
+#     MARGIN = 1,
+#     FUN    = function(x) { return(paste(x = x, collapse = "_")) }
+#     );
+#
+# print( str(DF.training) );
+#
+# print( str(unique(DF.training)) );
+#
+# print( str(DF.nearest.lat.lon) );
+#
+# print( str(unique(DF.nearest.lat.lon)) );
+#
+# print( setdiff(DF.training$lat_lon,DF.nearest.lat.lon$lat_lon) );
+#
+# print( setdiff(DF.nearest.lat.lon$lat_lon,DF.training$lat_lon) );
+#
+# DF.training <- merge(
+#     x     = DF.training,
+#     y     = DF.nearest.lat.lon[,c('lat_lon','land_cover')],
+#     by    = 'lat_lon',
+#     all.x = TRUE
+#     );
+# DF.training <- unique(DF.training);
+#
+# visualize.fpc.approximations(
+#     featureEngine    = trained.fpc.FeatureEngine,
+#     DF.variable      = DF.training,
+#     location         = 'lat_lon',
+#     date             = 'date',
+#     land.cover       = 'land_cover',
+#     variable         = target.variable,
+#     n.locations      = 10,
+#     DF.colour.scheme = DF.colour.scheme,
+#     my.seed          = my.seed,
+#     output.directory = approximations.directory
+#     );
+
+### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
+# CSV.partitions       <- "DF-partitions-scores.csv";
+# directory.fpc.scores <- "tmp-fpc-scores";
+# parquet.file.stem    <- "DF-tidy-scores";
 
 # compute.and.save.fpc.scores(
 #     DF.preprocessed      = DF.preprocessed,
@@ -243,14 +249,14 @@ parquet.file.stem    <- "DF-tidy-scores";
 # gc();
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-persist.fpc.scores(
-    var.name          = target.variable,
-    nc.file.stem      = "data-preprocessed",
-    parquet.file.stem = parquet.file.stem
-    );
-
-remove(list = c('DF.training'));
-gc();
+# persist.fpc.scores(
+#     var.name          = target.variable,
+#     nc.file.stem      = "data-preprocessed",
+#     parquet.file.stem = parquet.file.stem
+#     );
+#
+# remove(list = c('DF.training'));
+# gc();
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
 
