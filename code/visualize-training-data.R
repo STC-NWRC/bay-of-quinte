@@ -1,19 +1,15 @@
 
 visualize.training.data <- function(
-    DF.nearest.lat.lon = NULL,
-    DF.training        = NULL,
-    colname.pattern    = NULL,
-    DF.colour.scheme   = data.frame(
+    DF.training      = NULL,
+    colname.pattern  = NULL,
+    DF.colour.scheme = data.frame(
         row.names  = c("marsh",  "swamp",  "water",  "forest", "ag",     "shallow"),
         land_cover = c("marsh",  "swamp",  "water",  "forest", "ag",     "shallow"),
         colour     = c("#000000","#E69F00","#56B4E9","#009E73","#F0E442","red"    )
         ),
-    exclude.years       = NULL,
-    exclude.land.covers = NULL,
-    n.order             =  3,
-    plot.timeseries     = TRUE,
-    plot.heatmaps       = TRUE,
-    output.directory    = NULL
+    plot.timeseries  = TRUE,
+    plot.heatmaps    = TRUE,
+    output.directory = NULL
     ) {
 
     thisFunctionName <- "visualize.training.data";
@@ -22,7 +18,6 @@ visualize.training.data <- function(
     cat(paste0("\n",thisFunctionName,"() starts.\n\n"));
 
     require(ggplot2);
-    require(lubridate);
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
     if ( dir.exists(output.directory) ) {
@@ -37,17 +32,11 @@ visualize.training.data <- function(
         }
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-    DF.training[,'year'] <- lubridate::year(DF.training[,'date']);
+    DF.training[,'year'] <- format(x = DF.training[,'date'], format = "%Y");
     DF.training[,'lat_lon_year'] <- apply(
-        X      = DF.training[,c('lat','lon','year')],
+        X      = DF.training[,c('latitude','longitude','year')],
         MARGIN = 1,
         FUN    = function(x) { return(paste(x,collapse = "_")) }
-        );
-    DF.training <- merge(
-        x     = DF.training,
-        y     = DF.nearest.lat.lon[,c('lat','lon','land_cover')],
-        all.x = TRUE,
-        by    = c('lat','lon')
         );
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###

@@ -1,9 +1,9 @@
 
 train.fpc.FeatureEngine <- function(
     DF.training         = NULL,
-    DF.land.cover       = NULL,
     x                   = 'lon',
     y                   = 'lat',
+    land.cover          = 'land_cover',
     date                = 'date',
     variable            = 'VV',
     min.date            = NULL,
@@ -23,16 +23,17 @@ train.fpc.FeatureEngine <- function(
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
     require(fpcFeatures);
-    require(lubridate);
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
     y_x <- paste(x = c(y, x), collapse = "_");
-    DF.training <- DF.training[,c(y,x,date,variable)];
+    DF.training <- DF.training[,c(y,x,land.cover,date,variable)];
     DF.training[,y_x] <- apply(
         X      = DF.training[,c(y,x)],
         MARGIN = 1,
         FUN    = function(x) { return(paste(x,collapse="_")) }
         );
+
+    DF.land.cover <- unique(DF.training[,c(y_x,land.cover)]);
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
     if ( (!is.null(RData.output)) & file.exists(RData.output) ) {
@@ -77,7 +78,7 @@ train.fpc.FeatureEngine <- function(
         }
 
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-    DF.training[,'year'] <- lubridate::year(DF.training[,'date']);
+    DF.training[,'year'] <- format(x = DF.training[,'date'], format = "%Y");
 
     years <- unique(DF.training[,'year']);
     for ( temp.year in years ) {
@@ -101,7 +102,7 @@ train.fpc.FeatureEngine <- function(
                 by.x = y_x,
                 by.y = y_x
                 );
-            DF.fpc <- DF.fpc[,c(y_x,'year','land_cover',paste0('fpc_',1:n.harmonics))]
+            DF.fpc <- DF.fpc[,c(y_x,'year',land.cover,paste0('fpc_',1:n.harmonics))]
 
             train.fpc.FeatureEngine_score.scatterplot(
                 DF.fpc           = DF.fpc,
@@ -110,16 +111,16 @@ train.fpc.FeatureEngine <- function(
                 PNG.output       = PNG.temp.year
                 );
 
-            DF.fpc[,c('lat','lon')] <- matrix(
+            DF.fpc[,c(y,x)] <- matrix(
                 ncol  = 2,
                 byrow = TRUE,
                 data  = apply(
-                    X      = DF.fpc[c('lat_lon','year')],
+                    X      = DF.fpc[c(y_x,'year')],
                     MARGIN = 1,
                     FUN    = function(x) { return(as.numeric(unlist(strsplit(x = x[1], split = "_")))) }
                     )
                 );
-            DF.fpc <- DF.fpc[,c('lat','lon',setdiff(colnames(DF.fpc),c('lat','lon')))];
+            DF.fpc <- DF.fpc[,c(y,x,setdiff(colnames(DF.fpc),c(y,x)))];
 
 
             write.csv(
@@ -195,7 +196,7 @@ train.fpc.FeatureEngine_score.scatterplot <- function(
         plot   = my.ggplot,
         dpi    = 150,
         height =  14,
-        width  =  16,
+        width  =  18,
         units  = 'in'
         );
 
