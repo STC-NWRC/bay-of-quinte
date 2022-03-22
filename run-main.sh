@@ -19,7 +19,7 @@
 ##################################################
 currentDIR=`pwd`
    codeDIR=${currentDIR}/code
- outputDIR=${currentDIR//github/gittmp}/output-`date +%Y-%m-%d-%H-%M-%S`-$1
+ outputDIR=${currentDIR//github/gittmp}/output-$1
 
 parentDIR=`dirname ${currentDIR}`
 # dataDIR=${parentDIR}/000-data
