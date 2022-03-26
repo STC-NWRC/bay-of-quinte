@@ -64,7 +64,7 @@ cat(paste0("\n# n.cores = ",n.cores,"\n"));
 # dir.geoson <- file.path(data.directory,"001-bay-of-quinte","training-data-geojson");
 # dir.tiffs  <- file.path(data.directory,"001-bay-of-quinte","tiffs");
 dir.geoson   <- file.path(data.directory,"TrainingData_Geojson");
-dir.tiffs    <- file.path(data.directory,"001-bay-of-quinte","tiffs");
+dir.tiffs    <- file.path(data.directory,"img");
 dir.parquets <- "parquets-data";
 dir.scores   <- "parquets-scores";
 
@@ -143,37 +143,37 @@ visualize.fpc.approximations(
     );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-# tiff2parquet(
-#     dir.tiffs    = dir.tiffs,
-#     n.cores      = n.cores,
-#     dir.parquets = dir.parquets
-#     );
+tiff2parquet(
+    dir.tiffs    = dir.tiffs,
+    n.cores      = n.cores,
+    dir.parquets = dir.parquets
+    );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-# compute.fpc.scores(
-#     x                    = 'longitude',
-#     y                    = 'latitude',
-#     date                 = 'date',
-#     variable             = "4_VV",
-#     RData.trained.engine = RData.trained.engine,
-#     dir.parquets         = dir.parquets,
-#     n.cores              = n.cores,
-#     dir.scores           = dir.scores
-#     );
+compute.fpc.scores(
+    x                    = 'longitude',
+    y                    = 'latitude',
+    date                 = 'date',
+    variable             = "4_VV",
+    RData.trained.engine = RData.trained.engine,
+    dir.parquets         = dir.parquets,
+    n.cores              = n.cores,
+    dir.scores           = dir.scores
+    );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-# plot.RGB.fpc.scores(
-#     dir.scores           = dir.scores,
-#     latitude             = 'latitude',
-#     longitude            = 'longitude',
-#     digits               = 4,
-#     channel.red          = 'fpc_1',
-#     channel.green        = 'fpc_2',
-#     channel.blue         = 'fpc_3',
-#     parquet.file.stem    = "DF-tidy-scores",
-#     PNG.output.file.stem = "plot-RGB-fpc-scores",
-#     dots.per.inch        = 300
-#     );
+plot.RGB.fpc.scores(
+    dir.scores           = dir.scores,
+    latitude             = 'latitude',
+    longitude            = 'longitude',
+    digits               = 4,
+    channel.red          = 'fpc_1',
+    channel.green        = 'fpc_2',
+    channel.blue         = 'fpc_3',
+    parquet.file.stem    = "DF-tidy-scores",
+    PNG.output.file.stem = "plot-RGB-fpc-scores",
+    dots.per.inch        = 300
+    );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
 
