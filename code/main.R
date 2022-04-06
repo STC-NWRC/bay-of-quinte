@@ -164,18 +164,18 @@ compute.fpc.scores(
     );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-plot.RGB.fpc.scores(
-    dir.scores           = dir.scores,
-    latitude             = 'latitude',
-    longitude            = 'longitude',
-    digits               = 4,
-    channel.red          = 'fpc_1',
-    channel.green        = 'fpc_2',
-    channel.blue         = 'fpc_3',
-    parquet.file.stem    = "DF-tidy-scores",
-    PNG.output.file.stem = "plot-RGB-fpc-scores",
-    dots.per.inch        = 300
-    );
+# plot.RGB.fpc.scores(
+#     dir.scores           = dir.scores,
+#     latitude             = 'latitude',
+#     longitude            = 'longitude',
+#     digits               = 4,
+#     channel.red          = 'fpc_1',
+#     channel.green        = 'fpc_2',
+#     channel.blue         = 'fpc_3',
+#     parquet.file.stem    = "DF-tidy-scores",
+#     PNG.output.file.stem = "plot-RGB-fpc-scores",
+#     dots.per.inch        = 300
+#     );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
 
