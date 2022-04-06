@@ -15,6 +15,7 @@ preprocess.training.data <- function(
     ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
     colnames(DF.output) <- tolower(colnames(DF.output));
     colnames(DF.output) <- gsub(x = colnames(DF.output), pattern = "^class$",   replacement = "land_cover");
+    colnames(DF.output) <- gsub(x = colnames(DF.output), pattern = "^cdesc$",   replacement = "land_cover");
     colnames(DF.output) <- gsub(x = colnames(DF.output), pattern = "^point_x$", replacement = "longitude");
     colnames(DF.output) <- gsub(x = colnames(DF.output), pattern = "^point_y$", replacement =  "latitude");
     colnames(DF.output) <- gsub(x = colnames(DF.output), pattern = "^vv$",      replacement = "VV");
