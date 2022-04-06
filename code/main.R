@@ -156,7 +156,7 @@ compute.fpc.scores(
     x                    = 'longitude',
     y                    = 'latitude',
     date                 = 'date',
-    variable             = "4_VV",
+    variable             = "VV",
     RData.trained.engine = RData.trained.engine,
     dir.parquets         = dir.parquets,
     n.cores              = n.cores,

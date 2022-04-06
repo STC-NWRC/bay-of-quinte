@@ -232,6 +232,11 @@ tiff2parquet_clean.colnames <- function(
         pattern     = "^_",
         replacement = ""
         );
+    temp.colnames <- gsub(
+        x           = temp.colnames,
+        pattern     = "^[0-9]+_",
+        replacement = ""
+        );
     return(temp.colnames);
     }
 
