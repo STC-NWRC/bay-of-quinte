@@ -38,6 +38,7 @@ code.files <- c(
     'getData-colour-scheme.R',
     'getData-geojson.R',
     'initializePlot.R',
+    'persist-fpc-scores.R',
     'plot-RGB-fpc-scores.R',
     'preprocess-training-data.R',
     'tiff2parquet.R',
@@ -162,6 +163,8 @@ compute.fpc.scores(
     n.cores              = n.cores,
     dir.scores           = dir.scores
     );
+
+persist.fpc.scores(dir.scores = dir.scores);
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
 # plot.RGB.fpc.scores(
