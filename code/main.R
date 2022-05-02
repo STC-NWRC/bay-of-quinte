@@ -62,8 +62,6 @@ n.cores   <- ifelse(test = is.macOS, yes = 2, no = parallel::detectCores() - 1);
 cat(paste0("\n# n.cores = ",n.cores,"\n"));
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-# dir.geoson <- file.path(data.directory,"001-bay-of-quinte","training-data-geojson");
-# dir.tiffs  <- file.path(data.directory,"001-bay-of-quinte","tiffs");
 dir.geoson   <- file.path(data.directory,"TrainingData_Geojson");
 dir.tiffs    <- file.path(data.directory,"img");
 dir.parquets <- "parquets-data";
@@ -154,8 +152,8 @@ tiff2parquet(
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
 compute.fpc.scores(
-    x                    = 'longitude',
-    y                    = 'latitude',
+    x                    = 'x',
+    y                    = 'y',
     date                 = 'date',
     variable             = "VV",
     RData.trained.engine = RData.trained.engine,
@@ -164,21 +162,26 @@ compute.fpc.scores(
     dir.scores           = dir.scores
     );
 
-persist.fpc.scores(dir.scores = dir.scores);
+persist.fpc.scores(
+    dir.scores = dir.scores,
+    variable   = "VV"
+    );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-# plot.RGB.fpc.scores(
-#     dir.scores           = dir.scores,
-#     latitude             = 'latitude',
-#     longitude            = 'longitude',
-#     digits               = 4,
-#     channel.red          = 'fpc_1',
-#     channel.green        = 'fpc_2',
-#     channel.blue         = 'fpc_3',
-#     parquet.file.stem    = "DF-tidy-scores",
-#     PNG.output.file.stem = "plot-RGB-fpc-scores",
-#     dots.per.inch        = 300
-#     );
+plot.RGB.fpc.scores(
+    dir.tiffs            = dir.tiffs,
+    dir.scores           = dir.scores,
+    variable             = 'VV',
+    x                    = 'x',
+    y                    = 'y',
+    digits               = 4,
+    channel.red          = 'fpc_1',
+    channel.green        = 'fpc_2',
+    channel.blue         = 'fpc_3',
+    parquet.file.stem    = 'DF-tidy-scores-VV',
+    PNG.output.file.stem = 'plot-RGB-fpc-scores-VV',
+    dots.per.inch        = 300
+    );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
 
