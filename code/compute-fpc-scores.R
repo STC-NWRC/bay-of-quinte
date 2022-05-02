@@ -74,7 +74,7 @@ compute.fpc.scores_inner <- function(
 
         temp.log <- data.parquet;
         temp.log <- gsub(x = temp.log, pattern = "\\.parquet", replacement = ".log");
-        temp.log <- gsub(x = temp.log, pattern = "^data-",     replacement = "sink-");
+        temp.log <- gsub(x = temp.log, pattern = "^data-",     replacement = paste0("sink-",variable,"-"));
 
         temp.sink <- file(description = file.path(dir.scores,temp.log), open = "wt");
         sink(file = temp.sink, type = "output" );
@@ -89,9 +89,11 @@ compute.fpc.scores_inner <- function(
 
         ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
         DF.batch <- arrow::read_parquet(file.path(dir.parquets,data.parquet));
+        colnames(DF.batch) <- gsub(x = colnames(DF.batch), pattern = "^[0-9]+_", replacement = "");
 
         ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
         y_x <- paste0(y,'_',x);
+
         DF.batch[,y_x] <- apply(
             X      = DF.batch[,c(y,x)],
             MARGIN = 1,
@@ -115,10 +117,12 @@ compute.fpc.scores_inner <- function(
         DF.scores[,y     ] <- as.numeric(gsub(x = DF.scores[,y_x], pattern = "_.+", replacement = ""));
         DF.scores[,x     ] <- as.numeric(gsub(x = DF.scores[,y_x], pattern = ".+_", replacement = ""));
         DF.scores[,'year'] <- as.numeric(DF.scores[,'year']);
+
         DF.scores <- DF.scores[,c(y,x,setdiff(colnames(DF.scores),c(y,x,y_x)))];
 
         ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
-        scores.parquet <- gsub(x = data.parquet, pattern = "^data-", replacement = "scores-");
+        scores.parquet <- gsub(x = data.parquet, pattern = "^data-", replacement = paste0("scores-",variable,"-"));
+
         arrow::write_parquet(
             sink = file.path(dir.scores,scores.parquet),
             x    = DF.scores
