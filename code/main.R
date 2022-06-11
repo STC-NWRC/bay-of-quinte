@@ -181,7 +181,8 @@ plot.RGB.fpc.scores(
     channel.blue         = 'fpc_3',
     parquet.file.stem    = 'DF-tidy-scores-VV',
     PNG.output.file.stem = 'plot-RGB-fpc-scores-VV',
-    dots.per.inch        = 300
+    dots.per.inch        = 300,
+    n.cores              = n.cores
     );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
