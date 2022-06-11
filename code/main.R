@@ -34,18 +34,18 @@ require(fpcFeatures);
 
 # source supporting R code
 code.files <- c(
-    'compute-fpc-scores.R',
-    'getData-colour-scheme.R',
-    'getData-geojson.R',
-    'initializePlot.R',
-    'persist-fpc-scores.R',
-    'plot-RGB-fpc-scores.R',
-    'preprocess-training-data.R',
-    'tiff2parquet.R',
-    'train-fpc-FeatureEngine.R',
-    'utils-rgb.R',
-    'visualize-fpc-approximations.R',
-    'visualize-training-data.R'
+    "compute-fpc-scores.R",
+    "getData-colour-scheme.R",
+    "getData-geojson.R",
+    "initializePlot.R",
+    "persist-fpc-scores.R",
+    "plot-RGB-fpc-scores.R",
+    "preprocess-training-data.R",
+    "tiff2parquet.R",
+    "train-fpc-FeatureEngine.R",
+    "utils-rgb.R",
+    "visualize-fpc-approximations.R",
+    "visualize-training-data.R"
     );
 
 for ( code.file in code.files ) {
@@ -155,7 +155,7 @@ compute.fpc.scores(
     x                    = 'x',
     y                    = 'y',
     date                 = 'date',
-    variable             = "VV",
+    variable             = target.variable,
     RData.trained.engine = RData.trained.engine,
     dir.parquets         = dir.parquets,
     n.cores              = n.cores,
@@ -164,7 +164,7 @@ compute.fpc.scores(
 
 persist.fpc.scores(
     dir.scores = dir.scores,
-    variable   = "VV",
+    variable   = target.variable,
     n.cores    = n.cores
     );
 
@@ -172,15 +172,15 @@ persist.fpc.scores(
 plot.RGB.fpc.scores(
     dir.tiffs            = dir.tiffs,
     dir.scores           = dir.scores,
-    variable             = 'VV',
+    variable             = target.variable,
     x                    = 'x',
     y                    = 'y',
     digits               = 4,
     channel.red          = 'fpc_1',
     channel.green        = 'fpc_2',
     channel.blue         = 'fpc_3',
-    parquet.file.stem    = 'DF-tidy-scores-VV',
-    PNG.output.file.stem = 'plot-RGB-fpc-scores-VV',
+    parquet.file.stem    = paste0('DF-tidy-scores-',     target.variable),
+    PNG.output.file.stem = paste0('plot-RGB-fpc-scores-',target.variable),
     dots.per.inch        = 300,
     n.cores              = n.cores
     );
