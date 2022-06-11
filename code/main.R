@@ -164,7 +164,8 @@ compute.fpc.scores(
 
 persist.fpc.scores(
     dir.scores = dir.scores,
-    variable   = "VV"
+    variable   = "VV",
+    n.cores    = n.cores
     );
 
 ### ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ###
